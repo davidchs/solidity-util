@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+      <title>Solidity util</title>
+  </head>
+  <body>
+      <div>
+          <div>
+              <input id="address" type="text" name="address">
+              <button id="button">Check</button>
+          </div>
+          <div>
+              <span id="tokenAddress_error"></span>
+              <h2>Whitelist registration : <span id="myIsWhitelist"></span> </h2>
+          </div>
+          <div>
+              <h3> <span id="myBalance">0</span></h3> + bonus<h4> <span id="myBonus">0</span></h4>
+          </div>
+      </div>
+  </body>
+
+  <!-- jQuery Files -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+
+  <!-- W3.js -->
+  <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+
+  <!-- My -->
+  <script src="js/utils.js"></script>
+  <script>
+      $("#button").click(function() {
+          var address = $("#address").val();
+          var myInfo = getMyInfo(address);
+          var myIsWhitelist ="";
+          
+          // whiteList chechk
+          if(myInfo.myIsWhitelist === true){
+              myIsWhitelist = "Register";
+          } else if (myInfo.myIsWhitelist === false) {
+              myIsWhitelist = "Unregistered";
+          }
+
+          // tokenAddress check
+          if(myInfo === false){
+              document.getElementById("tokenAddress_error").innerHTML = "Please check your ether address.";
+              document.getElementById("myIsWhitelist").innerHTML = "";
+              document.getElementById("myBalance").innerHTML = "0";
+          } else {
+              document.getElementById("presale").className += " active";
+              document.getElementById("tokenAddress_error").innerHTML = "";
+              document.getElementById("myIsWhitelist").innerHTML = myIsWhitelist;
+              document.getElementById("myBalance").innerHTML = Math.floor(myInfo.myBalance_1);
+              document.getElementById("myBonus").innerHTML = Math.floor(myInfo.myBonus_1);
+          }
+
+          // myBalance active
+          if(myInfo.myBalance_1 === undefined || myInfo.myBalance_1 === "0") {
+              document.getElementById('presale').classList.remove('active');
+          } else {
+              document.getElementById('presale').classList.add('active');
+          }
+      });
+  </script>
+</html>
