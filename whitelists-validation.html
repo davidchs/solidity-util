@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="utf-8">
+      <meta http-equiv="X-UA-Compatible" content="IE=edge">
+      <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+      <title>Solidity utils</title>
+  </head>
+  <body class="with-top-navbar">
+    <div class="container p-t-md">
+      <div class="row">
+        <div class="col-md-6">
+            차례로 입력합니다.
+            <br>
+            1. <textarea id="text-whitelist" type="text" class="form-control" placeholder="white list 입력 ..."></textarea>
+            <br>
+            2. <textarea id="text-address" type="text" class="form-control" placeholder="주소 입력 ..."></textarea>
+            <br>
+            3. <textarea id="text-abi" type="text" class="form-control" placeholder="abi 입력 ..."></textarea>
+            <br>
+            4. <textarea id="text-name" type="text" class="form-control" placeholder="이벤트명 입력 ..."></textarea>
+            <br>
+            <button onclick="create()" type="button" class="btn btn-default btn-block m-t">작성완료</button>
+            <br>
+            <button onclick="checkWhitelist()" type="button" class="btn btn-default btn-block m-t">화이트리스트 검증</button>
+        </div>
+      </div>
+    </div>
+    <!-- W3.js -->
+    <script src="https://cdn.jsdelivr.net/gh/ethereum/web3.js/dist/web3.min.js"></script>
+
+    <!-- My -->
+    <script src="js/utils.js"></script>
+
+    <!-- Whitelists validation -->
+    <script>
+        function create() {
+            let address = document.getElementById('text-address').value;
+            let abi = JSON.parse(document.getElementById('text-abi').value);
+            let name = document.getElementById('text-name').value;
+
+            let contractAbi = web3.eth.contract(abi);
+            let contract = contractAbi.at(address);
+            
+            /*event listening*/
+            let event = contract[name](null, {fromBlock: 0, toBlock: 'latest'});
+
+            event.watch(function(err, res){
+                console.log("====" + name + "====");
+                console.log(res);
+                console.log(res.args);
+                console.log("====================");
+            });
+        }
+
+        function checkWhitelist() {
+            let address = document.getElementById('text-address').value;
+            let abi = JSON.parse(document.getElementById('text-abi').value);
+            let whitelistText = document.getElementById('text-whitelist').value;
+            let whitelist = whitelistText.split(",");
+
+            let contractAbi = web3.eth.contract(abi);
+            let contract = contractAbi.at(address);
+            
+            whitelist.forEach((elem, index, array) => {
+                console.log(elem + " : " + contract.whitelist(elem));
+            });
+        }
+    </script>
+  </body>
+</html>
